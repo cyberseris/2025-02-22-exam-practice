@@ -45,7 +45,7 @@ function App() {
     setSelect(e.target.value);
   }
 
-  const handleSearch = (e) => {    
+/*   const handleSearch = (e) => {    
     if(select==='All'){
       const tempProducts = products.filter((product)=>
         product.title.includes(e.target.value));
@@ -57,9 +57,19 @@ function App() {
       setFilterProducts(tempProducts);
     }
     setSearch(e.target.value)
-  }
+  } */
 
   const handleSearchChange = (e) => {
+    if(select==='All'){
+      const tempProducts = products.filter((product)=>
+        product.title.includes(e.target.value));
+      setFilterProducts(tempProducts);
+    }else{
+      const tempProducts = products.filter((product)=>
+        product.title.includes(e.target.value) && product.category===select
+      );
+      setFilterProducts(tempProducts);
+    }
     setSearch(e.target.value)
   }
 
@@ -75,11 +85,11 @@ function App() {
           placeholder="搜尋產品..."
           className="p-2 border rounded-md flex-grow"
           onChange={handleSearchChange}
-          onKeyDown={(e) => {
+          /* onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handleSearch(e);
               }
-            }}
+            }} */
           />
         <select
           className="p-2 border rounded-md"
