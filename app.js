@@ -11,9 +11,9 @@ const categories = [
 
 function App() {
   const [products, setProducts] = useState([]);
-  const [select,setSelect] = useState('');
-  const [fillColor,setFillColor] = useState("none")
-  const [filterProducts, setFilterProducts] = useState([]);
+  const [select,setSelect] = useState('All');
+  const [filterProducts, setFilterProducts] = useState();
+  const [search, setSearch] = useState('');
   const [likeProducts, setLikeProducts] = useState([])
 
   useEffect(()=>{
@@ -30,17 +30,37 @@ function App() {
     }) 
   };
 
-  const handleChange = (e) => {
-    const tempProducts = products.filter((product)=> product.category===e.target.value)
-    setFilterProducts(tempProducts);
+  const handleCategory = (e) => {  
+    if(e.target.value === 'All'){
+      const tempProducts = search?products.filter((product)=>
+        product.title.includes(search)
+      ):products
+      setFilterProducts(tempProducts);
+    }else{
+      const tempProducts = search?products.filter((product)=>
+        product.title.includes(search) && product.category===e.target.value
+      ):products.filter((product)=> product.category===e.target.value)
+      setFilterProducts(tempProducts);
+    }
     setSelect(e.target.value);
   }
 
-  const handleFilter = (e) => {
-    const tempProducts = products.filter((product)=>
-      product.title.includes(e.target.value)
-    );
-    setFilterProducts(tempProducts);
+  const handleSearch = (e) => {    
+    if(select==='All'){
+      const tempProducts = products.filter((product)=>
+        product.title.includes(e.target.value));
+      setFilterProducts(tempProducts);
+    }else{
+      const tempProducts = products.filter((product)=>
+        product.title.includes(e.target.value) && product.category===select
+      );
+      setFilterProducts(tempProducts);
+    }
+    setSearch(e.target.value)
+  }
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value)
   }
 
   const handleColor = (id) => {
@@ -54,16 +74,17 @@ function App() {
           type="text"
           placeholder="搜尋產品..."
           className="p-2 border rounded-md flex-grow"
+          onChange={handleSearchChange}
           onKeyDown={(e) => {
               if (e.key === "Enter") {
-                handleFilter(e);
+                handleSearch(e);
               }
             }}
           />
         <select
           className="p-2 border rounded-md"
           value={select}
-          onChange={handleChange}
+          onChange={handleCategory}
           >
           {categories.map((category,i)=>{
             return (<option key={i} value={category}>{category}</option> 
@@ -72,7 +93,7 @@ function App() {
         </select>
       </div>
       <div  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {!filterProducts.length?products.map((product)=>{
+        {!filterProducts?products.map((product)=>{
           return(
             <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
               <div className="relative overflow-hidden">
@@ -187,7 +208,6 @@ function App() {
         })
         }
       </div>
-
     </div>
   );
 }
