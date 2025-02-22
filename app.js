@@ -14,7 +14,7 @@ function App() {
   const [select,setSelect] = useState('All');
   const [filterProducts, setFilterProducts] = useState();
   const [search, setSearch] = useState('');
-  const [likeProducts, setLikeProducts] = useState([])
+  const [likeProducts, setLikeProducts] = useState({})
 
   useEffect(()=>{
     productsList()
@@ -24,6 +24,7 @@ function App() {
     await axios.get('https://fakestoreapi.com/products')
     .then(res=>{
       setProducts(res.data)
+      console.log(res.data)
     })
     .catch(err=>{
       console.log("Error: ", err)
